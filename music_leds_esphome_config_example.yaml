@@ -1,19 +1,20 @@
+substitutions:
+    name: example_led
+    friendly_name: "Example LED"
+    n_pixels: "70" # must be quoted, number must be even.
+
 esphome:
-  name: example_led
+  name: $name
   platform: ESP32
   board: nodemcu-32s
   includes:
-    - audio-reactive-led-strip/easphome-audio_reactive_led
-    - includes/FFT.h
-    - includes/ExpFilter.h
-    - includes/VisualEffect.h
-    - includes/gaussian_filter1d.h
+    - audio-reactive-led-strip/audio-reactive-led-strip
 
 esp32_touch:
 #  setup_mode: True
 binary_sensor:
   - platform: esp32_touch
-    name: "Touch Pad on ESP32"
+    name: "Touch Pad on ESP32 ${friendly_name}"
     pin: GPIO32
     threshold: 1000
     on_press:
@@ -29,8 +30,7 @@ light:
     pin: GPIO21
     #data_pin: GPIO21
     #clock_pin: GPIO17
-    # If you change the num_leds, you should change the N_PIXELS defined in music_leds_esphome.h corresponding
-    num_leds: 60
+    num_leds: $n_pixels
     #rgb_order: BGR
     name: "MUSIC LEDS"
     effects:
@@ -39,14 +39,21 @@ light:
           name: Scroll with Music
           update_interval: 0s
           lambda: |-
-            music_leds.ShowFrame(MODE_SCROLL, &it);
+            ((MusicLeds*) id(music_leds)->ShowFrame(MODE_SCROLL, &it);
       - addressable_lambda:
           name: Energy with Music
           update_interval: 0s
           lambda: |-
-            music_leds.ShowFrame(MODE_ENERGY, &it);
+            ((MusicLeds*) id(music_leds)->ShowFrame(MODE_ENERGY, &it);
       - addressable_lambda:
           name: Spectrum with Music
           update_interval: 0s
           lambda: |-
-            music_leds.ShowFrame(MODE_SPECTRUM, &it);
+            ((MusicLeds*) id(music_leds)->ShowFrame(MODE_SPECTRUM, &it);
+
+custom_component:
+  - lambda: |-
+      auto my_music_leds = new MusicLeds(${n_pixels});
+      return {my_music_leds};
+    components:
+      - id: music_leds
