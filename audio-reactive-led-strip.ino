@@ -1,4 +1,5 @@
-/* The main program of 
+/**
+ * The main program of audio-reactive-led-strip for Arduino
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -9,10 +10,10 @@
 
 #include "driver/i2s.h"
 #include <FastLED.h>
-#include "includes/FFT.h"
-#include "includes/VisualEffect.h"
+#include "audio-reactive-led-strip/FFT.h"
+#include "audio-reactive-led-strip/VisualEffect.h"
 
-/* Some viriables in programs
+/* Some variables in programs
 *
 * BUFFER_SIZE: How many samples to be received each time. This number must be the power of 2.
 * const uint16_t BUFFER_SIZE = 1024;
@@ -50,14 +51,19 @@
 *
 */
 
+/*uncommment next line to print the touch values, useful for calibration.*/
+#define PRINT_TOUCH
+
 const uint16_t BUFFER_SIZE = 1024;
 const uint8_t N_ROLLING_HISTORY = 2;
 const uint16_t SAMPLE_RATE = 44100;
-const uint16_t N_PIXELS = 60;
+const uint16_t N_PIXELS = 70;
 const uint16_t N_MEL_BIN = 18;
 const float MIN_FREQUENCY = 200;
 const float MAX_FREQUENCY = 12000;
 const float MIN_VOLUME_THRESHOLD = 0.0003;
+const int TOUCH_THRESHOLD = 500; // touch detection threshold
+const int TOUCH_TIMEOUT = 1000;  // timeout for touch button presses in milliseconds
 
 const int PDM_WS_IO_PIN = 19;
 const int PDM_DATA_IN_PIN = 22;
@@ -172,11 +178,14 @@ void loop() {
   static uint32_t oldtime = 0;
   uint16_t touch_value;
   touch_pad_read(TOUCH_PAD_NUM9, &touch_value);
-  if ((touch_value < 1000) && (millis() - oldtime > 1000)) {
+  #ifdef PRINT_TOUCH
+  Serial.println(touch_value);
+  #endif
+  if ((touch_value < TOUCH_THRESHOLD) && (millis() - oldtime > TOUCH_TIMEOUT)) {
     oldtime = millis();
     CurrentMode = PLAYMODE((CurrentMode + 1) % MODE_MAX);
   }
-  else if (touch_value > 1000)
+  else if (touch_value > TOUCH_THRESHOLD)
     oldtime = 0;
 
   yield();

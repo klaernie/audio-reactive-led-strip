@@ -1,15 +1,13 @@
 esphome:
-  name: ......
+  name: example_led
   platform: ESP32
   board: nodemcu-32s
   includes:
-    - music_leds_esphome.h
+    - audio-reactive-led-strip/easphome-audio_reactive_led
     - includes/FFT.h
     - includes/ExpFilter.h
     - includes/VisualEffect.h
     - includes/gaussian_filter1d.h
-
-.......
 
 esp32_touch:
 #  setup_mode: True

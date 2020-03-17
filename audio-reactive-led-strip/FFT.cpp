@@ -1,38 +1,5 @@
-/*
- * Fast Fourier Transformation/Mel-Frequency
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- */
-
-#pragma once
-#include <cmath>
-#include "ExpFilter.h"
-
-class FFT{
-    private:
-        float* _hammer=NULL;
-        uint16_t _num_mel_bands, _num_samples, _sample_rate;
-        float _min_frequency, _max_frequency, _min_volume_threshold;
-        float * _y_data_cal;
-        float** _melmat=NULL;
-        float hz2mel(float f);
-        float mel2hz(float m);
-        void compute_hammer();
-        void compute_melmat(uint16_t num_mel_bands, float freq_min, float freq_max, uint16_t num_fft_bands, uint16_t sample_rate);
-        class ExpFilter * _mel_gain, * _mel_smoothing;
-
-    public:
-        FFT(uint16_t samples, uint16_t n_mel_bin, float min_frequency, float max_frequency, uint16_t sample_rate, float min_volume_threshold);
-        ~FFT();
-        void fft(float * real, float * imag);
-        void fft(float * real);
-        void abs(float * real, float * imag);
-        void hamming(float *real);
-        void t2mel(float * y_data, float * mel_data);
-};
+#include "FFT.h"
+using namespace std;
 
 FFT::FFT(uint16_t samples, uint16_t n_mel_bin, float min_frequency, float max_frequency, uint16_t sample_rate, float min_volume_threshold){
     _num_samples = samples;
@@ -92,7 +59,7 @@ void FFT::compute_melmat(uint16_t num_mel_bands, float freq_min, float freq_max,
 
     float lowFreqMel = hz2mel(freq_min);
     float highFreqMel = hz2mel (freq_max);
-    
+
     float* filterCentreFreq = new float[num_mel_bands+2];
     for(uint16_t i=0; i<num_mel_bands+2; i++)
         filterCentreFreq[i] = mel2hz(lowFreqMel + (highFreqMel-lowFreqMel)/(num_mel_bands+1)*i);
@@ -144,7 +111,7 @@ void FFT::fft(float * real, float * imag){
         j += k;
     }
 
-    // Compute the POWER  
+    // Compute the POWER
     uint8_t power = 0;
     while (((_num_samples >> power) & 1) != 1) power++;
 
@@ -211,7 +178,7 @@ void FFT::t2mel(float * y_data, float * mel_data){
       mel_data[i] += _y_data_cal[j] * _melmat[i][j];
     }
     mel_data[i] = mel_data[i] * mel_data[i];
-    max_mel = std::max(mel_data[i],max_mel);
+    max_mel = max(mel_data[i],max_mel);
   }
 
   _mel_gain->update(&max_mel);
