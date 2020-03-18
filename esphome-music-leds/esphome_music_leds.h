@@ -1,3 +1,18 @@
+/**
+ *
+ * esphome_music_leds.h
+ *
+ * Header file for ESPHome Music LEDs
+ *
+ * ESPHome Music LEDs is a custom component for ESPHome that visualizes sound
+ * with an addressible LED strip supported by the FastLED library..
+ *
+ * Original concept by: https://github.com/scottlawsonbc
+ * ESPHome Port by: https://github.com/zhujisheng
+ * ESPHome Component support by: https://github.com/geoffdavis
+ *
+ * License: GPL v3.0 - See LICENSE file in top of repository.
+ */
 #ifndef _ESP_MUSIC_LEDS_H_
 #define _ESP_MUSIC_LEDS_H_
 #pragma once
