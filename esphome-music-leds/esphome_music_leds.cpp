@@ -6,13 +6,13 @@ MusicLeds::MusicLeds(
         float min_volume_threshold,
         int pdm_ws_io_pin,
         int pdm_data_in_pin
-    ){
-    pin_config.ws_io_num = pdm_ws_io_pin;
-    pin_config.data_in_num = pdm_data_in_pin;
+    ): n_pixels_{n_pixels} {
+    this->pin_config.ws_io_num = pdm_ws_io_pin;
+    this->pin_config.data_in_num = pdm_data_in_pin;
 
-    physic_leds = new CRGB[n_pixels];
+    this->physic_leds = new CRGB[n_pixels_];
 
-    fft = new FFT(
+    this->fft = new FFT(
             BUFFER_SIZE*N_ROLLING_HISTORY,
             N_MEL_BIN,
             MIN_FREQUENCY,
@@ -20,7 +20,7 @@ MusicLeds::MusicLeds(
             SAMPLE_RATE,
             min_volume_threshold
           );
-    effect = new VisualEffect(N_MEL_BIN,n_pixels);
+    this->effect = new VisualEffect(N_MEL_BIN,n_pixels_);
 }
 
 MusicLeds::~MusicLeds(){
@@ -35,7 +35,8 @@ void MusicLeds::setup() {
     i2s_set_pin(MLED_I2S_NUM, &pin_config);
     i2s_stop(MLED_I2S_NUM);
     i2s_start(MLED_I2S_NUM);
-
+    ESP_LOGCONFIG(TAG, "setup: using %u pixels, pins: %d ws, %d data for mic.",
+            this->n_pixels_, pin_config.ws_io_num, pin_config.data_in_num);
 }
 
 
@@ -43,7 +44,10 @@ void MusicLeds::ShowFrame( PLAYMODE CurrentMode, light::AddressableLight *p_it){
     static float mel_data[N_MEL_BIN];
 
     for (int i = 0; i < N_ROLLING_HISTORY - 1; i++)
-        memcpy(y_data + i * BUFFER_SIZE, y_data + (i + 1)*BUFFER_SIZE, sizeof(float)*BUFFER_SIZE);
+        memcpy(
+                y_data + i * BUFFER_SIZE, y_data + (i + 1)*BUFFER_SIZE,
+                sizeof(float)*BUFFER_SIZE
+              );
 
     int16_t l[BUFFER_SIZE];
 
@@ -55,7 +59,8 @@ void MusicLeds::ShowFrame( PLAYMODE CurrentMode, light::AddressableLight *p_it){
         static int ii=0;
         ii++;
         if(ii%SAMPLE_RATE==0)
-          ESP_LOGD("custom","%lu\t%d\n",millis(),ii);
+          ESP_LOGD(TAG, "mode: %d - %u pixels, %lu milliseconds\t%d samples\n",
+                  CurrentMode, this->n_pixels_, millis(), ii);
     }
     fft->t2mel( y_data, mel_data );
 

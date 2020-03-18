@@ -1,0 +1,9 @@
+"name": "Audio Reactive LED Strip",
+"version": "1.0.0",
+"description": "Arduino Library for creating an Audio Reactive LED strip on the ESP32 platform.",
+"keywords": ["esp32", "led", "fft", "audio"]
+"respository":
+{
+    "type": "git",
+    "url": "https://github.com/geoffdavis/audio-reactive-led-strip.git"
+}

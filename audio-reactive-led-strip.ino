@@ -1,3 +1,8 @@
+#include <FFT.h>
+#include <ExpFilter.h>
+#include <gaussian_filter1d.h>
+#include <VisualEffect.h>
+
 /**
  * The main program of audio-reactive-led-strip for Arduino
  *

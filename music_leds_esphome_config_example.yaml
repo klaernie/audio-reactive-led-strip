@@ -9,6 +9,7 @@ esphome:
   board: nodemcu-32s
   includes:
     - audio-reactive-led-strip/audio-reactive-led-strip
+    - audio-reactive-led-strip/esphome-music-leds
 
 esp32_touch:
 #  setup_mode: True

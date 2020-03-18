@@ -6,10 +6,13 @@ using namespace esphome;
 
 #include "driver/i2s.h"
 #include <FastLED.h>
-#include "FFT.h"
-#include "VisualEffect.h"
+#include "audio-reactive-led-strip/FFT.h"
+#include "audio-reactive-led-strip/VisualEffect.h"
 
 enum PLAYMODE {MODE_SCROLL, MODE_ENERGY, MODE_SPECTRUM};
+
+
+static const char* TAG = "MusicLeds";
 
 class MusicLeds : public Component {
     private:
@@ -31,11 +34,11 @@ class MusicLeds : public Component {
 
         float y_data[BUFFER_SIZE * N_ROLLING_HISTORY];
         class FFT *fft;
-        class VisualEffect * effect;
+        class VisualEffect *effect;
 
-        CRGB * physic_leds;
+        CRGB *physic_leds;
 
-        i2s_port_t i2s_num = I2S_NUM_0; // i2s port number
+        uint16_t n_pixels_;
         i2s_config_t i2s_config = {
           .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
           .sample_rate = SAMPLE_RATE,
