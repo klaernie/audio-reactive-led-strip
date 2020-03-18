@@ -11,7 +11,6 @@ using namespace esphome;
 
 enum PLAYMODE {MODE_SCROLL, MODE_ENERGY, MODE_SPECTRUM};
 
-
 static const char* TAG = "MusicLeds";
 
 class MusicLeds : public Component {
@@ -32,13 +31,13 @@ class MusicLeds : public Component {
         static constexpr float MAX_FREQUENCY = 8000;
         static const i2s_port_t MLED_I2S_NUM = I2S_NUM_0;
 
-        float y_data[BUFFER_SIZE * N_ROLLING_HISTORY];
-        class FFT *fft;
-        class VisualEffect *effect;
+        float y_data[BUFFER_SIZE * N_ROLLING_HISTORY]{};
+        class FFT *fft{nullptr};
+        class VisualEffect *effect{nullptr};
 
-        CRGB *physic_leds;
+        CRGB *physic_leds{nullptr};
 
-        uint16_t n_pixels_;
+        uint16_t n_pixels_; // init in constructor
         i2s_config_t i2s_config = {
           .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
           .sample_rate = SAMPLE_RATE,

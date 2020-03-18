@@ -39,9 +39,10 @@ void MusicLeds::setup() {
             this->n_pixels_, pin_config.ws_io_num, pin_config.data_in_num);
 }
 
-
 void MusicLeds::ShowFrame( PLAYMODE CurrentMode, light::AddressableLight *p_it){
-    static float mel_data[N_MEL_BIN];
+    static float mel_data[N_MEL_BIN] {};
+    int16_t i2s_buf[BUFFER_SIZE] {};
+    static unsigned int bytes_read {0};
 
     for (int i = 0; i < N_ROLLING_HISTORY - 1; i++)
         memcpy(
@@ -49,18 +50,16 @@ void MusicLeds::ShowFrame( PLAYMODE CurrentMode, light::AddressableLight *p_it){
                 sizeof(float)*BUFFER_SIZE
               );
 
-    int16_t l[BUFFER_SIZE];
 
-    unsigned int read_num;
-        i2s_read(MLED_I2S_NUM, l, BUFFER_SIZE * 2, &read_num, portMAX_DELAY);
+    i2s_read(MLED_I2S_NUM, i2s_buf, BUFFER_SIZE * 2, &bytes_read, portMAX_DELAY);
 
     for(int i = 0; i < BUFFER_SIZE; i++) {
-        y_data[BUFFER_SIZE * (N_ROLLING_HISTORY - 1) + i] = l[i] / 32768.0;
+        y_data[BUFFER_SIZE * (N_ROLLING_HISTORY - 1) + i] = i2s_buf[i] / 32768.0;
         static int ii=0;
         ii++;
         if(ii%SAMPLE_RATE==0)
-          ESP_LOGD(TAG, "mode: %d - %u pixels, %lu milliseconds\t%d samples\n",
-                  CurrentMode, this->n_pixels_, millis(), ii);
+          ESP_LOGD(TAG, "mode: %d - %lu milliseconds\t%d samples\n",
+                  CurrentMode, millis(), ii);
     }
     fft->t2mel( y_data, mel_data );
 
