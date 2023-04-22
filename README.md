@@ -1,7 +1,5 @@
-[中文](README-Chinese.md)
-
 # Music LED Strip
-Real-time LED strip music visualization running on ESP32, based on Arduino or [ESPHome](https://esphome.io/) platform（ESPHome can connect to [HomeAssistant](https://www.home-assistant.io) easily）.
+Real-time LED strip music visualization running on [ESPHome](https://esphome.io/) platform（ESPHome can connect to [HomeAssistant](https://www.home-assistant.io) easily）.
 
 ## Effect Show
 <img src="images/music_led_strip.gif" width="550">
