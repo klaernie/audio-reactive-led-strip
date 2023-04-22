@@ -73,8 +73,8 @@ void MusicLeds::ShowFrame( PLAYMODE CurrentMode, light::AddressableLight *p_it){
         static int ii=0;
         ii++;
         if(ii%SAMPLE_RATE==0)
-          ESP_LOGD(TAG, "mode: %d - %lu milliseconds\t%d samples\n",
-                  CurrentMode, millis(), ii);
+          ESP_LOGD(TAG, "mode: %d - %lu milliseconds\t%d samples",
+                  CurrentMode, esphome::millis(), ii);
     }
     fft->t2mel( y_data, mel_data );
 
