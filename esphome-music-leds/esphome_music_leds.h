@@ -42,7 +42,7 @@ class MusicLeds : public Component {
         static const uint8_t N_ROLLING_HISTORY = 2;
         static const uint16_t SAMPLE_RATE = 16000;
         static const uint16_t N_MEL_BIN = 18;
-        static constexpr float MIN_FREQUENCY = 200;
+        static constexpr float MIN_FREQUENCY = 60;
         static constexpr float MAX_FREQUENCY = 8000;
         static const i2s_port_t MLED_I2S_NUM = I2S_NUM_0;
 
